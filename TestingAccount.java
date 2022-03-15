@@ -51,9 +51,9 @@ public class TestingAccount {
         writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(344444));
         writeLedger(currAccCon.getAccNo(), currAccCon.addWithdrawal(555555));
 
-        System.out.println(ledger.get("8007424313").getTransactionObj().size());
-        //System.out.println(ledger.get("8007424313").getTransactionListing(20));
         System.out.println(currAccCon.printTransactionListing());
+        System.out.println(currAccCon.printOverdraftLimit());
+        System.out.println(currAccCon.printWithdrawalLimit());
     }
 
     public static String generateCurrAccNo(ConcurrentHashMap<String, Account> ledger) {
@@ -143,6 +143,58 @@ public class TestingAccount {
                     Transaction newT = new Transaction(transDate, valueDate, chqNum, details, wAmt, dAmt, runningBal-wAmt+dAmt);
                     data.get(accountNum).addTransaction(newT);
                 }
+            }
+            //close file scanner
+            scan.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean initHeader(ConcurrentHashMap<String, Account> data) {
+        try {
+            Scanner scan = new Scanner(new File("AccountHeaders.csv"));
+            //skip header
+            scan.nextLine();
+            //iterate Line by Line
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                Scanner lineScan = new Scanner(line);
+                lineScan.useDelimiter(",");
+                String accountNum = lineScan.next();
+                long wLimit = 0, oLimit = 0;
+                try {
+                    wLimit =  (long)(Double.parseDouble(lineScan.next())*100);
+                } catch (Exception e) {
+                    //do nothing
+                }
+                try {
+                    oLimit = (long)(Double.parseDouble(lineScan.next())*100);
+                } catch (Exception e) {
+                    //do nothing
+                }
+                //skips balance amt
+                lineScan.next();
+                //close line scanner
+                lineScan.close();
+
+                if (data.get(accountNum) == null){
+                    throw new Exception("Account number not initialised");
+                }
+
+                if (accountNum.charAt(0) == '4') {
+                    SavingsAcc newAcc = (SavingsAcc)data.get(accountNum);
+                    newAcc.setWithdrawalLimit(wLimit);
+                }
+
+                if (accountNum.charAt(0) == '8'){
+                    CurrentAcc newAcc = (CurrentAcc)data.get(accountNum);
+                    newAcc.setWithdrawalLimit(wLimit);
+                    newAcc.setOverdraftLimit(oLimit);
+                }
+
+
             }
             //close file scanner
             scan.close();
