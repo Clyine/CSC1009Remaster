@@ -9,11 +9,6 @@ public class SystemController {
     private AccountController accCon;
     private UserController userCon;
 
-
-    public SystemController(User user){
-        this.userCon = new UserController(user, new UserView()); 
-    }
-
     public SystemController(Account acc, User user){
         this.userCon = new UserController(user, new UserView()); 
         if (acc.getAccNo().charAt(0) == '8'){
@@ -23,16 +18,6 @@ public class SystemController {
             this.accCon = new SavingAccountController((SavingsAcc)acc , new SavingAccView());
         }
     }
-
-    public void setAccountCon(Account acc) {
-        if (acc.getAccNo().charAt(0) == '8'){
-            this.accCon = new CurrentAccountController((CurrentAcc)acc, new CurrentAccView());
-        }
-        else {
-            this.accCon = new SavingAccountController((SavingsAcc)acc , new SavingAccView());
-        }
-    }
-
 
     public Transaction addDeposit(long amt){
         return this.accCon.addDeposit(amt);
