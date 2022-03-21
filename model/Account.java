@@ -30,10 +30,6 @@ public class Account {
         this.WithdrawalLimit = amt;
         return this.WithdrawalLimit;
     }
-
-    public LinkedList<Transaction> getTransactionObj() {
-        return transactionsList;
-    }
     
     public void addTransaction(Transaction t) {
         this.transactionsList.add(t);

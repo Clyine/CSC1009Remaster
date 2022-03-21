@@ -13,7 +13,7 @@ public abstract class AccountController {
     protected Account model;
     protected AccountView view;
 
-    public AccountController(Account model, AccountView view) {
+    protected AccountController(Account model, AccountView view) {
         this.model = model;
         this.view = view;
     }
@@ -26,38 +26,34 @@ public abstract class AccountController {
         return model.getBalance();
     }
 
-    private void addTransaction(Transaction t) {
-        model.addTransaction(t);
-    }
-
     public Transaction addDeposit(long amt) {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", "New Deposit", 0l, amt, model.getBalance() + amt);
-        addTransaction(newT);
+        model.addTransaction(newT);
         return newT;
     }
 
     public Transaction addDeposit(long amt, String message) {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", message, 0l, amt, model.getBalance() + amt);
-        addTransaction(newT);
+        model.addTransaction(newT);
         return newT;
     }
 
     public Transaction addWithdrawal(long amt) {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", "New Withdrawal", amt, 0l, model.getBalance() - amt);
-        addTransaction(newT);
+        model.addTransaction(newT);
         return newT;
     }
 
     public Transaction addWithdrawal(long amt,String message) {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", message, amt, 0l, model.getBalance() - amt);
-        addTransaction(newT);
+        model.addTransaction(newT);
         return newT;
     }
 
 
     public Transaction addOpeningTransaction() {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", "Account Opened", 0l, 0l, model.getBalance());
-        addTransaction(newT);
+        model.addTransaction(newT);
         return newT;
     }
 

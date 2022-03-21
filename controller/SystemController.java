@@ -50,7 +50,6 @@ public class SystemController {
         return this.accCon.addWithdrawal(amt, message);
     } 
 
-
     public Transaction addOpeningTransaction(){
         return this.accCon.addOpeningTransaction();
     }

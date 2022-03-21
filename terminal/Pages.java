@@ -9,7 +9,6 @@ import model.*;
 import datastore.*;
 import exceptions.*;
 
-
 public class Pages {
 
     private final DataStore d;
