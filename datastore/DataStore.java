@@ -13,23 +13,23 @@ import model.*;
 
 public class DataStore {
 
-    private ConcurrentHashMap<String, User> transactionsStore;
+    private ConcurrentHashMap<String, User> data;
     private ConcurrentHashMap<String, String> userStore;
     private ConcurrentHashMap<String, String> userLookup;
     private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public DataStore() {
-        this.transactionsStore = new ConcurrentHashMap<String, User>();
+        this.data = new ConcurrentHashMap<String, User>();
         this.userStore = new ConcurrentHashMap<String, String>();
         this.userLookup = new ConcurrentHashMap<String, String>();
         initUserStore(userStore);
-        initData(transactionsStore, userStore);
-        initHeader(transactionsStore);
+        initData(data, userStore);
+        initHeader(data);
 
     }
 
-    public ConcurrentHashMap<String, User> getTransactionsStore() {
-        return this.transactionsStore;
+    public ConcurrentHashMap<String, User> getDataStore() {
+        return this.data;
     }
 
     public ConcurrentHashMap<String, String> getUserStore() {

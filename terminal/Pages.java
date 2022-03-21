@@ -45,7 +45,7 @@ public class Pages {
                     newUser.addAcc(accNo, newAcc);
                     this.controller = new SystemController(newAcc, newUser);
                     Transaction t = controller.addOpeningTransaction();
-                    this.d.getTransactionsStore().put(controller.getUsername(), newUser);
+                    this.d.getDataStore().put(controller.getUsername(), newUser);
                     this.d.writeLedger(controller, t);
                     this.d.writeHeader(controller);
                     this.dos.writeUTF("\nSuccess, your new savings account number is : " + accNo + "\nPress enter to continue.");
@@ -72,7 +72,7 @@ public class Pages {
             if (!this.d.authUser(username, pin)) { //Check credentials stored in userStore hashmap
                 this.dos.writeUTF("Invalid username or PIN!\nRe-enter user");
             } else {
-                User currUser = this.d.getTransactionsStore().get(username); //get User object from userData hashmap
+                User currUser = this.d.getDataStore().get(username); //get User object from userData hashmap
                 this.dos.writeUTF("\nWelcome, " + currUser.getUsername()+ "\nPlease select option\n1. Open a new Account\n2. Transact on an active account");
                 String input = this.dis.readUTF();
                 switch (input) {
@@ -111,7 +111,7 @@ public class Pages {
                 currUser.addAcc(accNo, newAcc);
                 this.controller = new SystemController(newAcc, currUser);
                 Transaction t = controller.addOpeningTransaction();
-                this.d.getTransactionsStore().put(controller.getUsername(), currUser);
+                this.d.getDataStore().put(controller.getUsername(), currUser);
                 this.d.getUserLookup().put(accNo, controller.getUsername());
                 this.d.writeLedger(controller, t);
                 this.d.writeHeader(controller);
@@ -124,7 +124,7 @@ public class Pages {
                 currUser.addAcc(accNo, newAcc);
                 this.controller = new SystemController(newAcc, currUser);
                 t = controller.addOpeningTransaction();
-                this.d.getTransactionsStore().put(controller.getUsername(), currUser);
+                this.d.getDataStore().put(controller.getUsername(), currUser);
                 this.d.getUserLookup().put(accNo, controller.getUsername());
                 this.d.writeLedger(controller, t);
                 this.d.writeHeader(controller);
@@ -182,7 +182,7 @@ public class Pages {
                 this.dos.writeUTF("\nInvalid Account Number. Press Enter to continue");
             }
             else {
-                User payeeUser = this.d.getTransactionsStore().get(this.d.getUsername(str));
+                User payeeUser = this.d.getDataStore().get(this.d.getUsername(str));
                 Account payeeAcc = payeeUser.getAccountList().get(str);
                 SystemController payeeCon = new SystemController(payeeAcc, payeeUser);
                 SystemController payorCon = this.controller;
@@ -270,7 +270,7 @@ public class Pages {
 
     private static String generateCurrAccNo(DataStore d) {
         String str = String.format("%d", 8000000000l + r.nextLong(10000000));
-        if (!d.getTransactionsStore().containsKey(str)){
+        if (!d.getDataStore().containsKey(str)){
             return str;
         }
         else {
@@ -280,7 +280,7 @@ public class Pages {
 
     private static String generateSavAccNo(DataStore d) {
         String str = String.format("%d", 4000000000l + r.nextLong(10000000));
-        if (!d.getTransactionsStore().containsKey(str)){
+        if (!d.getDataStore().containsKey(str)){
             return str;
         }
         else {
