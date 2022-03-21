@@ -1,8 +1,8 @@
-package controller.accounts;
+package controller;
 import java.io.IOException;
 
-import model.accounts.CurrentAcc;
-import view.accounts.CurrentAccView;
+import model.CurrentAcc;
+import view.CurrentAccView;
 
 public class CurrentAccountController extends AccountController{
 

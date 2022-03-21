@@ -1,6 +1,9 @@
-package controller.user;
-import model.user.*;
-import view.user.*;
+package controller;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import model.*;
+import view.*;
 
 public class UserController {
     private User model;
@@ -23,4 +26,16 @@ public class UserController {
         model.setPin(pin);
         return model.getPin();
     }
+
+    public void addAcc(String accNo, Account acc) {
+        model.addAcc(accNo, acc);
+    }
+
+    public ConcurrentHashMap<String, Account> getAccountList(){
+        return model.getAccountList();
+    }
+
+
+    //VIEWS
+    
 }

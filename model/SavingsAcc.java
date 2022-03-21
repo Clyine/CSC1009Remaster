@@ -1,4 +1,4 @@
-package model.accounts;
+package model;
 
 public class SavingsAcc extends Account{
     public SavingsAcc(String accNo) {

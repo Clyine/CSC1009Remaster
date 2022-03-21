@@ -1,4 +1,4 @@
-package model.accounts;
+package model;
 
 public class CurrentAcc extends Account{
     private long overdraftLimit = 300000;
@@ -12,7 +12,7 @@ public class CurrentAcc extends Account{
     }
 
     public long setOverdraftLimit(long limit){
-        this.overdraftLimit = -limit;
+        this.overdraftLimit = limit;
         return -this.overdraftLimit;
     }
 

@@ -1,11 +1,10 @@
-package controller.accounts;
+package controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import model.*;
-import model.accounts.Account;
-import view.accounts.AccountView;
+import view.AccountView;
 
 public abstract class AccountController {
 
@@ -37,11 +36,24 @@ public abstract class AccountController {
         return newT;
     }
 
+    public Transaction addDeposit(long amt, String message) {
+        Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", message, 0l, amt, model.getBalance() + amt);
+        addTransaction(newT);
+        return newT;
+    }
+
     public Transaction addWithdrawal(long amt) {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", "New Withdrawal", amt, 0l, model.getBalance() - amt);
         addTransaction(newT);
         return newT;
     }
+
+    public Transaction addWithdrawal(long amt,String message) {
+        Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", message, amt, 0l, model.getBalance() - amt);
+        addTransaction(newT);
+        return newT;
+    }
+
 
     public Transaction addOpeningTransaction() {
         Transaction newT = new Transaction(dateFormat.format(new Date()), dateFormat.format(new Date()), "", "Account Opened", 0l, 0l, model.getBalance());

@@ -1,10 +1,8 @@
-package view.accounts;
-
-import java.io.DataOutputStream;
+package view;
 
 public class SavingAccView extends AccountView {
-    public SavingAccView(DataOutputStream dos) {
-        super(dos);
+    public SavingAccView() {
+        super();
     }
 
     public String printOverdraftLimit(long amt){

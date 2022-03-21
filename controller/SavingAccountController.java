@@ -1,9 +1,9 @@
-package controller.accounts;
+package controller;
 
 import java.io.IOException;
 
-import model.accounts.SavingsAcc;
-import view.accounts.SavingAccView;
+import model.SavingsAcc;
+import view.SavingAccView;
 
 public class SavingAccountController extends AccountController{
 

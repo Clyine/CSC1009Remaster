@@ -1,14 +1,10 @@
-package view.accounts;
+package view;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class AccountView {
-
-    DataOutputStream dos;
     
-    protected AccountView(DataOutputStream dos) {
-        this.dos = dos;
+    protected AccountView() {
     }
 
     public String printBalance(long balance) throws IOException {

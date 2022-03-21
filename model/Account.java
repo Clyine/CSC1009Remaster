@@ -1,7 +1,5 @@
-package model.accounts;
+package model;
 import java.util.LinkedList;
-
-import model.Transaction;
 
 public class Account {
     private String name = "";

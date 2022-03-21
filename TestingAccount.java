@@ -1,16 +1,10 @@
+
 import model.*;
-import model.accounts.Account;
-import model.accounts.CurrentAcc;
-import model.accounts.SavingsAcc;
-import model.user.*;
 import view.*;
-import view.accounts.CurrentAccView;
-import view.accounts.SavingAccView;
-import view.user.*;
-import controller.accounts.AccountController;
-import controller.accounts.CurrentAccountController;
-import controller.accounts.SavingAccountController;
-import controller.user.*;
+import controller.*;
+import exceptions.InsufficientBalanceException;
+import exceptions.OverdraftLimitExceedException;
+import exceptions.WithdrawalLimitExceedException;
 
 import java.io.DataOutputStream;
 import java.io.FileWriter;
@@ -18,7 +12,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
-
 import java.io.File;
 
 public class TestingAccount {
@@ -29,6 +22,48 @@ public class TestingAccount {
         ConcurrentHashMap<String, User> userStore = new ConcurrentHashMap<String, User>();
 
         initData(ledger);
+        initHeader(ledger);
+        initUserStore(userStore, ledger);
+
+        //login
+        User myTest = userStore.get("sample");
+        UserController myTestCon = new UserController(myTest, new UserView());
+        
+        //enter Account
+        Account CurrAcc = myTestCon.getAccountList().get("8006780504");
+        AccountController currAccCon = new CurrentAccountController((CurrentAcc)CurrAcc, new CurrentAccView());
+
+        //Deposits
+        String accNum = currAccCon.getAccNo();
+        Transaction T= currAccCon.addDeposit(344444);
+        writeLedger(accNum, T);
+
+        //Withdrawal
+        try {
+            long amt = 244444;
+            if (amt > currAccCon.getWithdrawalLimit()){
+                throw new WithdrawalLimitExceedException(currAccCon.getWithdrawalLimit());
+            }
+
+            if (currAccCon.getBalance() - amt < currAccCon.getOverdraftLimit()) {
+                if (currAccCon.getOverdraftLimit() == 0) {
+                    throw new InsufficientBalanceException();
+                }
+                else {
+                    throw new OverdraftLimitExceedException(currAccCon.getOverdraftLimit());
+                }
+            }
+            accNum = currAccCon.getAccNo();
+            T= currAccCon.addWithdrawal(amt);
+            writeLedger(accNum, T);
+        } catch (WithdrawalLimitExceedException e) {
+            System.out.println(e.getMessage());
+        } catch (OverdraftLimitExceedException e) {
+            System.out.println(e.getMessage());
+        } catch (InsufficientBalanceException e) {
+            System.out.println(e.getMessage());
+        }
+
         //String inputUsername = "sample";
         //String inputPin = "1111";
 
@@ -37,19 +72,19 @@ public class TestingAccount {
 
 
         //String newCurrentAccNo = generateCurrAccNo(ledger);
-        //newUser.addCurrentAcc(newCurrentAccNo);
-        Account newCurrentAcc = ledger.get("8007424313");
-        AccountController currAccCon = new CurrentAccountController((CurrentAcc)newCurrentAcc, new CurrentAccView(dos));
-        //currAccCon.addOpeningTransaction();
+        // //newUser.addCurrentAcc(newCurrentAccNo);
+        // Account newCurrentAcc = ledger.get("8007424313");
+        // AccountController currAccCon = new CurrentAccountController((CurrentAcc)newCurrentAcc, new CurrentAccView());
+        // //currAccCon.addOpeningTransaction();
 
-        //ledger.put(newCurrentAccNo, newCurrentAcc);
-        //userStore.put(inputUsername, newUser);
+        // //ledger.put(newCurrentAccNo, newCurrentAcc);
+        // //userStore.put(inputUsername, newUser);
 
-        writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(311111));
-        writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(322222));
-        writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(333333));
-        writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(344444));
-        writeLedger(currAccCon.getAccNo(), currAccCon.addWithdrawal(555555));
+        // writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(311111));
+        // writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(322222));
+        // writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(333333));
+        // writeLedger(currAccCon.getAccNo(), currAccCon.addDeposit(344444));
+        // writeLedger(currAccCon.getAccNo(), currAccCon.addWithdrawal(555555));
 
         System.out.println(currAccCon.printTransactionListing());
         System.out.println(currAccCon.printOverdraftLimit());
@@ -195,6 +230,41 @@ public class TestingAccount {
                 }
 
 
+            }
+            //close file scanner
+            scan.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean initUserStore(ConcurrentHashMap<String, User> data, ConcurrentHashMap<String, Account> ledger) {
+        try {
+            Scanner scan = new Scanner(new File("UserStore.csv"));
+            //skip header
+            scan.nextLine();
+            //iterate Line by Line
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                Scanner lineScan = new Scanner(line);
+                lineScan.useDelimiter(",");
+                String username = lineScan.next();
+                String pin = lineScan.next();
+                String accountNum = lineScan.next();
+                lineScan.close();
+
+                if (data.get(username) == null){
+                    User newUser = new User(username, pin);
+                    data.put(username,newUser);
+
+                    UserController userCon = new UserController(newUser, new UserView());
+                    userCon.addAcc(accountNum, ledger.get(accountNum));
+                }
+                else {
+                    UserController userCon = new UserController(data.get(username), new UserView());
+                    userCon.addAcc(accountNum, ledger.get(accountNum));
+                }
             }
             //close file scanner
             scan.close();

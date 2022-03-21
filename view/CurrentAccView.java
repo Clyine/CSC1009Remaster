@@ -1,11 +1,10 @@
-package view.accounts;
+package view;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class CurrentAccView extends AccountView{
-    public CurrentAccView(DataOutputStream dos) {
-        super(dos);
+    public CurrentAccView() {
+        super();
     }
 
     public String printOverdraftLimit(long amt) throws IOException {
